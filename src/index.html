@@ -97,9 +97,10 @@
             FormId: "e3e3e399-2022-ef11-840b-6045bdebaa39",
             FormApiUrl: "https://public-usa.mkt.dynamics.com/api/v1.0/orgs/16931aff-d26b-4b88-b323-fd941f691e25/landingpageforms"
           }
-          
+        
+        
           console.log(payload);
-
+          debugger;
           d365mktformcapture.submitForm(captureConfig, payload).catch(e => {
             // error handling
           });
