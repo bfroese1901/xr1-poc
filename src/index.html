@@ -90,7 +90,7 @@
 
         form.addEventListener("submit", (e) => {
           const serializedForm = d365mktformcapture.serializeForm(form, mappings);
-          // console.log(JSON.stringify(serializedForm)); // NOTE: enable for debugging
+          console.log(JSON.stringify(serializedForm)); // NOTE: enable for debugging
           const payload = serializedForm.SerializedForm.build();
 
           const captureConfig = {
@@ -98,11 +98,14 @@
             FormApiUrl: "https://public-usa.mkt.dynamics.com/api/v1.0/orgs/16931aff-d26b-4b88-b323-fd941f691e25/landingpageforms"
           }
         
-        
           console.log(payload);
+          
           debugger;
+
           d365mktformcapture.submitForm(captureConfig, payload).catch(e => {
             // error handling
+            console.log(e);
+            debugger;
           });
         }, true);
       });
