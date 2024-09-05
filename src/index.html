@@ -23,13 +23,12 @@
           }
         );
       }
-      
+
       let formMapGuid = generateGUID();
 
       d365mktformcapture
         .waitForElement("#xrForm") // example: "#form1" as a selector for form with id="form1"
         .then((form) => {
-
           $("#fmguid").val(formMapGuid);
 
           const mappings = [
@@ -120,30 +119,35 @@
             FormApiUrl:
               "https://public-usa.mkt.dynamics.com/api/v1.0/orgs/16931aff-d26b-4b88-b323-fd941f691e25/landingpageforms",
           };
-            
 
           form.addEventListener(
             "submit",
             (e) => {
-
               e.preventDefault();
-              
-              $.ajax({
+
+              var settings = {
                 url: "https://prod-130.westus.logic.azure.com:443/workflows/61b9d83e497f4905bf4dd22a7bcff6c6/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=h6laXcncIa1zYUmYZEWMZcNUtjOSLrE46-2rQ489g0w",
                 method: "POST",
                 timeout: 0,
-                processData: false,
-                contentType: "application/json",
-                data: formMapGuid,
-              }).done(function (response) {
+                headers: {
+                  "Content-Type": "application/json",
+                  Cookie:
+                    "ARRAffinity=11d21885d0939e62145f3556b341bff57859fec14ed84d4e7de98800f33e35d5; ARRAffinitySameSite=11d21885d0939e62145f3556b341bff57859fec14ed84d4e7de98800f33e35d5",
+                },
+                data: JSON.stringify({
+                  data: "Some strings",
+                }),
+              };
+
+              $.ajax(settings).done(function (response) {
                 console.log(response);
               });
 
-                // d365mktformcapture.submitForm(captureConfig, payload).catch(e => {
-                //   // error handling
-                //   console.log(e);
-                //   //debugger;
-                // });
+              // d365mktformcapture.submitForm(captureConfig, payload).catch(e => {
+              //   // error handling
+              //   console.log(e);
+              //   //debugger;
+              // });
             },
             true
           );
