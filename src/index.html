@@ -104,11 +104,16 @@
 
           d365mktformcapture.submitForm(captureConfig, payload).then((value) => {
             
-            console.log("VALUE");
-            
-            console.log(value);
-            
-            debugger;
+            $.ajax({
+            "url": "https://prod-130.westus.logic.azure.com:443/workflows/61b9d83e497f4905bf4dd22a7bcff6c6/triggers/manual/paths/invoke?api-version=2016-06-01",
+            "method": "POST",
+            "timeout": 0,
+            "processData": false,
+            "contentType": false,
+            "data": value
+          }).done(function (response) {
+            console.log(response);
+          });
 
           }).catch(e => {
             // error handling
