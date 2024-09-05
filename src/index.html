@@ -105,12 +105,12 @@
           d365mktformcapture.submitForm(captureConfig, payload).then((value) => {
             
             $.ajax({
-            "url": "https://prod-130.westus.logic.azure.com:443/workflows/61b9d83e497f4905bf4dd22a7bcff6c6/triggers/manual/paths/invoke?api-version=2016-06-01",
+            "url": "https://prod-130.westus.logic.azure.com:443/workflows/61b9d83e497f4905bf4dd22a7bcff6c6/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=h6laXcncIa1zYUmYZEWMZcNUtjOSLrE46-2rQ489g0w",
             "method": "POST",
             "timeout": 0,
             "processData": false,
-            "contentType": false,
-            "data": value
+            "contentType": "application/json",
+            "data": toString(value)
           }).done(function (response) {
             console.log(response);
           });
