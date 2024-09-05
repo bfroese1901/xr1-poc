@@ -102,15 +102,19 @@
           
           debugger;
 
-          d365mktformcapture.submitForm(captureConfig, payload).catch(e => {
-            // error handling
-            console.log(e);
-            //debugger;
-          }).finally(e => {
+          d365mktformcapture.submitForm(captureConfig, payload).then(e => {
             
+            alert("THEN!");
+            
+            alert(e);
+
             console.log(e);
             debugger;
 
+          }).catch(e => {
+            // error handling
+            console.log(e);
+            //debugger;
           });
         }, true);
       });
