@@ -87,75 +87,85 @@
           },
 
         ];
+          //what is the contents of 'form'?
+          debugger;
 
-        form.addEventListener("submit", (e) => {
           const serializedForm = d365mktformcapture.serializeForm(form, mappings);
+          
+          console.log("JSON STRINGIFY");
           console.log(JSON.stringify(serializedForm)); // NOTE: enable for debugging
+          debugger;
+
           const payload = serializedForm.SerializedForm.build();
 
           const captureConfig = {
             FormId: "e3e3e399-2022-ef11-840b-6045bdebaa39",
             FormApiUrl: "https://public-usa.mkt.dynamics.com/api/v1.0/orgs/16931aff-d26b-4b88-b323-fd941f691e25/landingpageforms"
           }
-        
+          
+          form.addEventListener("submit", (e) => {
+
+            console.log("PAYLOAD & CONFIG");
           console.log(payload);
-          
-          
+          console.log(captureConfig);
+          debugger;
+
           $.ajax({
             "url": "https://prod-130.westus.logic.azure.com:443/workflows/61b9d83e497f4905bf4dd22a7bcff6c6/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=h6laXcncIa1zYUmYZEWMZcNUtjOSLrE46-2rQ489g0w",
             "method": "POST",
             "timeout": 0,
             "processData": false,
             "contentType": "application/json",
-            "data": toString(payload)
+            "data": payload
           }).done(function (response) {
             console.log(response);
           });
 
-          d365mktformcapture.submitForm(captureConfig, payload).then((value) => {
-            
           debugger;
-          }).catch(e => {
-            // error handling
-            console.log(e);
-            //debugger;
-          });
+
+
+        //   d365mktformcapture.submitForm(captureConfig, payload).catch(e => {
+        //     // error handling
+        //     console.log(e);
+        //     //debugger;
+        //   });
         }, true);
+
       });
   </script>
 
-  <script>
-    //File Upload code
-    $(document).ready(function () {
-      const btnUploadFile = document.getElementById('btnUploadFile');
-      const fileInput = document.getElementById('fileInput');
-      const emailInput = document.getElementById('emailInput');
+  // <script>
+  //   //File Upload code
+  //   $(document).ready(function () {
+  //     const btnUploadFile = document.getElementById('btnUploadFile');
+  //     const fileInput = document.getElementById('fileInput');
+  //     const emailInput = document.getElementById('emailInput');
 
-      btnUploadFile.addEventListener('click', () => {
-        if (fileInput.files.length > 0) {
-          var form = new FormData();
-          form.append("fileContent", fileInput.files[0]);
-          form.append("fileName", fileInput.files[0].name);
-          form.append("email", emailInput.value);
-          var settings = {
-            //"url": "https://prod-108.westus.logic.azure.com:443/workflows/e997b4d43c294ec6bf3b104c3d34eb47/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=wU6CUN_AcK-t7tWAYGyyTYMUjT1UTD4uIKM1OsIrNPk",
-            "url": "https://prod-162.westus.logic.azure.com:443/workflows/47c1cd9187524ff6b7f24e08e01bab75/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Xi1hntO4LHwysxCJ6ngzGCOxp6V0fazwktYHjuyuIrA",
-            "method": "POST",
-            "timeout": 0,
-            "processData": false,
-            "mimeType": "multipart/form-data",
-            "contentType": false,
-            "data": form
-          };
+  //     btnUploadFile.addEventListener('click', () => {
+  //       if (fileInput.files.length > 0) {
+  //         var form = new FormData();
+  //         form.append("fileContent", fileInput.files[0]);
+  //         form.append("fileName", fileInput.files[0].name);
+  //         form.append("email", emailInput.value);
+  //         var settings = {
+  //           //"url": "https://prod-108.westus.logic.azure.com:443/workflows/e997b4d43c294ec6bf3b104c3d34eb47/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=wU6CUN_AcK-t7tWAYGyyTYMUjT1UTD4uIKM1OsIrNPk",
+  //           "url": "https://prod-162.westus.logic.azure.com:443/workflows/47c1cd9187524ff6b7f24e08e01bab75/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Xi1hntO4LHwysxCJ6ngzGCOxp6V0fazwktYHjuyuIrA",
+  //           "method": "POST",
+  //           "timeout": 0,
+  //           "processData": false,
+  //           "mimeType": "multipart/form-data",
+  //           "contentType": false,
+  //           "data": form
+  //         };
 
-          $.ajax(settings).done(function (response) {
-            console.log(response);
-          });
-        }
-      });
-    });
+  //         $.ajax(settings).done(function (response) {
+  //           console.log(response);
+  //         });
+  //       }
+  //     });
+  //   });
 
-  </script>
+  // </script>
 
 </head>
 
