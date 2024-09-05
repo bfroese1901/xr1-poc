@@ -130,24 +130,27 @@
                 method: "POST",
                 timeout: 0,
                 headers: {
-                  "Content-Type": "application/json",
-                  Cookie:
-                    "ARRAffinity=11d21885d0939e62145f3556b341bff57859fec14ed84d4e7de98800f33e35d5; ARRAffinitySameSite=11d21885d0939e62145f3556b341bff57859fec14ed84d4e7de98800f33e35d5",
+                  "Content-Type": "application/json"
                 },
                 data: JSON.stringify({
-                  data: "Some strings",
+                  data: formMapGuid,
                 }),
               };
 
               $.ajax(settings).done(function (response) {
                 console.log(response);
+                console.log("Completed Call");
               });
 
-              // d365mktformcapture.submitForm(captureConfig, payload).catch(e => {
-              //   // error handling
-              //   console.log(e);
-              //   //debugger;
-              // });
+              d365mktformcapture.submitForm(captureConfig, payload).then(e =>{
+                console.log("D365 Call thenable...");
+                console.log(e);
+                
+              }).catch(e => {
+                // error handling
+                console.log(e);
+                //debugger;
+              });
             },
             true
           );
