@@ -102,13 +102,12 @@
           
           debugger;
 
-          d365mktformcapture.submitForm(captureConfig, payload).then(e => {
+          d365mktformcapture.submitForm(captureConfig, payload).then((value) => {
             
-            alert("THEN!");
+            console.log("VALUE");
             
-            alert(e);
-
-            console.log(e);
+            console.log(value);
+            
             debugger;
 
           }).catch(e => {
@@ -160,7 +159,7 @@
     <h1>XR File Upload</h1>
   </main>
 
-  <form id="xrForm">
+  <form action="" id="xrForm">
 
     <p>First Name: <input type="text" name="firstName" /></p>
     <p>Last Name: <input type="text" name="lastName" /></p>
