@@ -107,51 +107,48 @@
             },
           ];
 
-          const serializedForm = d365mktformcapture.serializeForm(
-            form,
-            mappings
-          );
-
-          const payload = serializedForm.SerializedForm.build();
-
-          const captureConfig = {
-            FormId: "e3e3e399-2022-ef11-840b-6045bdebaa39",
-            FormApiUrl:
-              "https://public-usa.mkt.dynamics.com/api/v1.0/orgs/16931aff-d26b-4b88-b323-fd941f691e25/landingpageforms",
-          };
-
           form.addEventListener(
             "submit",
             (e) => {
               e.preventDefault();
 
-              var settings = {
-                url: "https://prod-130.westus.logic.azure.com:443/workflows/61b9d83e497f4905bf4dd22a7bcff6c6/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=h6laXcncIa1zYUmYZEWMZcNUtjOSLrE46-2rQ489g0w",
-                method: "POST",
-                timeout: 0,
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                data: JSON.stringify({
-                  data: formMapGuid,
-                }),
+              const serializedForm = d365mktformcapture.serializeForm(
+                form,
+                mappings
+              );
+
+              const payload = serializedForm.SerializedForm.build();
+
+              const captureConfig = {
+                FormId: "e3e3e399-2022-ef11-840b-6045bdebaa39",
+                FormApiUrl:
+                  "https://public-usa.mkt.dynamics.com/api/v1.0/orgs/16931aff-d26b-4b88-b323-fd941f691e25/landingpageforms",
               };
 
-              $.ajax(settings).done(function (response) {
-                console.log(response);
-                console.log("Completed Call");
-              });
+              d365mktformcapture
+                .submitForm(captureConfig, payload)
+                .then((e) => {
+                  var settings = {
+                    url: "https://prod-130.westus.logic.azure.com:443/workflows/61b9d83e497f4905bf4dd22a7bcff6c6/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=h6laXcncIa1zYUmYZEWMZcNUtjOSLrE46-2rQ489g0w",
+                    method: "POST",
+                    timeout: 0,
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    data: JSON.stringify({
+                      data: formMapGuid,
+                    }),
+                  };
 
-              d365mktformcapture.submitForm(captureConfig, payload).then(e =>{
-                console.log("D365 Call thenable...");
-                console.log(e);
-                debugger;
-
-              }).catch(e => {
-                // error handling
-                console.log(e);
-                //debugger;
-              });
+                  $.ajax(settings).done(function (response) {
+                    console.log(response);
+                  });
+                })
+                .catch((e) => {
+                  // error handling
+                  console.log(e);
+                  //debugger;
+                });
             },
             true
           );
@@ -223,7 +220,8 @@
       <p>Additional Information: <input type="text" name="additionalInfo" /></p>
 
       <p>Consent: <input type="checkbox" name="consentField" /></p>
-      <input id="fmguid" type="hidden" name="formmappingguid" value="" />
+
+      <input id="fmguid" type="hidden" name="formmappingguid" />
 
       <button type="submit">Submit form</button>
     </form>
