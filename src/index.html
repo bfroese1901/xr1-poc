@@ -24,7 +24,7 @@
         );
       }
       
-      const fileInput = document.getElementById('fileInput');
+      
 
       let formMapGuid = generateGUID();
 
@@ -147,9 +147,11 @@
                   //   console.log(response);
                   // });
                   
+                  let  fileInput = document.getElementById('fileInput');
                   debugger;
 
                   if (fileInput.files.length > 0) {
+                    debugger;
                     var form = new FormData();
                     form.append("fileContent", fileInput.files[0]);
                     form.append("fileName", fileInput.files[0].name);
