@@ -34,6 +34,12 @@
         );
       }
 
+      if (($("#emailInput").val()).toLowerCase().match("@kennametal.com") || ($("#emailInput").val()).toLowerCase().match("@widia.com")) {
+            document.getElementById("#emailInput").value = null;
+            alert("Please do not enter Kennametal & Widia email address in this field.");
+      }
+      
+
       let formMapGuid = generateGUID();
 
       d365mktformcapture
@@ -184,7 +190,7 @@
       <p>First Name: <input type="text" name="firstName" /></p>
       <p>Last Name: <input type="text" name="lastName" /></p>
       <p>Job Title: <input type="text" name="jobTitle" /></p>
-      <p>Email: <input type="text" name="emailAddress" /></p>
+      <p>Email: <input id="emailInput" type="text" name="emailAddress" /></p>
       <p>Company Name: <input type="text" name="companyName" /></p>
       <p>Account Number: <input type="text" name="accountNumber" /></p>
       <p>Phone: <input type="text" name="telephone" /></p>
