@@ -34,10 +34,7 @@
         );
       }
 
-      if ($("#emailInput").val().toLowerCase().match("@kennametal.com").index > 0 || $("#emailInput").val().toLowerCase().match("@widia.com").index > 0) {
-            document.getElementById("#emailInput").value = null;
-            alert("Please do not enter Kennametal & Widia email address in this field.");
-      }
+      
       
 
       let formMapGuid = generateGUID();
@@ -127,6 +124,11 @@
             "submit",
             (e) => {
               e.preventDefault();
+
+              if ($("#emailInput").val().toLowerCase().match("@kennametal.com").index > 0 || $("#emailInput").val().toLowerCase().match("@widia.com").index > 0) {
+            document.getElementById("#emailInput").value = null;
+            alert("Please do not enter Kennametal & Widia email address in this field.");
+      }
 
               const serializedForm = d365mktformcapture.serializeForm(
                 form,
