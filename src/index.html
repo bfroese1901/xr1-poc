@@ -34,7 +34,7 @@
         );
       }
 
-      if (($("#emailInput").val()).toLowerCase().match("@kennametal.com") || ($("#emailInput").val()).toLowerCase().match("@widia.com")) {
+      if ($("#emailInput").val().toLowerCase().match("@kennametal.com") || $("#emailInput").val().toLowerCase().match("@widia.com")) {
             document.getElementById("#emailInput").value = null;
             alert("Please do not enter Kennametal & Widia email address in this field.");
       }
