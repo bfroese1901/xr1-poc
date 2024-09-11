@@ -26,6 +26,8 @@
 
       
 $(document).ready(function(){
+  
+  const submitBtn = document.getElementById('submitButton');
 
   document.getElementById('fileInput').addEventListener('change', function (event) {
           const selectedFile = event.target.files[0];
@@ -37,12 +39,15 @@ $(document).ready(function(){
               if (fileSizeInMB > maxSizeInMB) {
                   alert('File size exceeds the allowed 10 Mb limit.');
                   event.target.value = '';
+                  submitBtn.disabled = true;
+              } else {
+                submitBtn.disabled = false;
               }
           }
       });
       
       document.getElementById('emailInput').addEventListener('change', function (event) {
-              const submitBtn = document.getElementById('submitButton');
+              
               var emailInput = document.getElementById("emailInput").value;
               var invalidDomains = ["@kennametal.com", "@widia.com"];
               var isValid = true;
