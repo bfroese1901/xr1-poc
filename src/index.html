@@ -6,13 +6,16 @@
     <link rel="stylesheet" href="styles.css" />
     <title>XR File Upload</title>
 
+    <!--jQuery isn't required for the D365 form code to work. If removed, the form validation scripts below need to be updated to use vanilla JS -->
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 
+    <!-- FormCapture.bundle.js is required, and is provided by D365 Form Capture auto-generation -->
     <script src="https://cxppusa1formui01cdnsa01-endpoint.azureedge.net/usa/FormCapture/FormCapture.bundle.js"></script>
 
     <script>
-      // NOTE: for reference see https://go.microsoft.com/fwlink/?linkid=2250770
-
+      
+// generateGUID() creates a GUID that gets saved to the Contact record on form submit, and simultaneously passed to Power Automate flow as a lookup value (i.e. tethers the form submission, and the file upload action together)
       function generateGUID() {
         return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
           /[xy]/g,
@@ -29,6 +32,7 @@ $(document).ready(function(){
   
   const submitBtn = document.getElementById('submitButton');
 
+  // File size validation. Disables submit button if over 10Mb.
   document.getElementById('fileInput').addEventListener('change', function (event) {
           const selectedFile = event.target.files[0];
           if (selectedFile) {
@@ -47,6 +51,7 @@ $(document).ready(function(){
           }
       });
       
+      // Email address validation. Disables submit button if either @kennametal.com or @widia.com are present.
       document.getElementById('emailInput').addEventListener('change', function (event) {
               
               var emailInput = document.getElementById("emailInput").value;
@@ -73,8 +78,10 @@ $(document).ready(function(){
 
       let formMapGuid = generateGUID();
 
+      // Standard form capture 
+      // https://learn.microsoft.com/en-us/dynamics365/customer-insights/journeys/real-time-marketing-form-capture#embedding-the-capture-script-into-your-page-and-mapping-definition
       d365mktformcapture
-        .waitForElement("#xrForm") // example: "#form1" as a selector for form with id="form1"
+        .waitForElement("#xrForm")
         .then((form) => {
           $("#fmguid").val(formMapGuid);
 
@@ -154,6 +161,7 @@ $(document).ready(function(){
             },
           ];
 
+          
           form.addEventListener(
             "submit",
             (e) => {
@@ -175,7 +183,8 @@ $(document).ready(function(){
               d365mktformcapture
                 .submitForm(captureConfig, payload)
                 .then((e) => {
-                  //If User has uploaded a file using Option 2 field, then an HTTP POST call is made to Power Automate
+
+                  // If User has uploaded a file using Option 2 field, then an HTTP POST call is made to Power Automate
                   let fileInput = document.getElementById("fileInput");
 
                   if (fileInput.files.length > 0) {
@@ -246,9 +255,6 @@ $(document).ready(function(){
 <!-- This Option 1 field is obselete. It was originally created as a placeholder field on the CIJ form for the File Upload piece. It will be removed, and only Option 2 will remain, as a static text input field -->
       <p style="display:none;" >Option 1: File Submission <input type="text" name="option1" /></p>
 
-      
-
-      
 
       <label for="excelFile">Option 1 Upload Excel File:</label>
       <p>To provide the details of your request, please download and use our
