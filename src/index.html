@@ -24,6 +24,51 @@
         );
       }
 
+      
+      //         if ($("#emailInput").val().toLowerCase().match("@kennametal.com").index > 0 || $("#emailInput").val().toLowerCase().match("@widia.com").index > 0) {
+      //       document.getElementById("#emailInput").value = null;
+      //       alert("Please do not enter Kennametal & Widia email address in this field.");
+      // }
+
+             
+      document.getElementById('fileInput').addEventListener('change', function (event) {
+          const selectedFile = event.target.files[0];
+          if (selectedFile) {
+              const fileSizeInBytes = selectedFile.size;
+              const fileSizeInMB = Math.round(fileSizeInBytes / 1024 / 1024); // Convert to megabytes
+              const maxSizeInMB = 10; // Set your desired maximum size in megabytes
+
+              if (fileSizeInMB > maxSizeInMB) {
+                  alert('File size exceeds the allowed 10 Mb limit.');
+                  event.target.value = '';
+              }
+          }
+      });
+      
+      document.getElementById('fileInput').addEventListener('change', function (event) {
+              const submitBtn = document.getElementById('submitButton');
+              var emailInput = document.getElementById("emailInput").value;
+              var invalidDomains = ["@kennametal.com", "@widia.com"];
+              var isValid = true;
+
+              invalidDomains.forEach(function(domain) {
+                  if (emailInput.includes(domain)) {
+                      isValid = false;
+                  }
+              });
+              
+              if (!isValid) {
+                  alert("Email addresses from kennametal.com and widia.com are not allowed.");    
+                  submitBtn.disabled = true;
+
+              } else {
+                submitBtn.disabled = false;
+              }
+
+      });
+
+      
+
       let formMapGuid = generateGUID();
 
       d365mktformcapture
@@ -112,11 +157,6 @@
             (e) => {
               e.preventDefault();
 
-      //         if ($("#emailInput").val().toLowerCase().match("@kennametal.com").index > 0 || $("#emailInput").val().toLowerCase().match("@widia.com").index > 0) {
-      //       document.getElementById("#emailInput").value = null;
-      //       alert("Please do not enter Kennametal & Widia email address in this field.");
-      // }
-
               const serializedForm = d365mktformcapture.serializeForm(
                 form,
                 mappings
@@ -137,6 +177,7 @@
                   let fileInput = document.getElementById("fileInput");
 
                   if (fileInput.files.length > 0) {
+
                     var form = new FormData();
                     form.append("fileContent", fileInput.files[0]);
                     form.append("fileName", fileInput.files[0].name);
@@ -227,7 +268,7 @@
 
       <input id="fmguid" type="hidden" name="formmappingguid" />
 
-      <button type="submit">Submit form</button>
+      <button id="submitButton" type="submit">Submit form</button>
     </form>
   </body>
 </html>
