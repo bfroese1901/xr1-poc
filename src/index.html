@@ -38,8 +38,9 @@ $(document).ready(function(){
 
               if (fileSizeInMB > maxSizeInMB) {
                   alert('File size exceeds the allowed 10 Mb limit.');
-                  event.target.value = '';
+                  
                   submitBtn.disabled = true;
+                  event.target.value = '';
               } else {
                 submitBtn.disabled = false;
               }
