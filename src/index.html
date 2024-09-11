@@ -25,13 +25,9 @@
       }
 
       
-      //         if ($("#emailInput").val().toLowerCase().match("@kennametal.com").index > 0 || $("#emailInput").val().toLowerCase().match("@widia.com").index > 0) {
-      //       document.getElementById("#emailInput").value = null;
-      //       alert("Please do not enter Kennametal & Widia email address in this field.");
-      // }
+$(document).ready(function(){
 
-             
-      document.getElementById('fileInput').addEventListener('change', function (event) {
+  document.getElementById('fileInput').addEventListener('change', function (event) {
           const selectedFile = event.target.files[0];
           if (selectedFile) {
               const fileSizeInBytes = selectedFile.size;
@@ -208,6 +204,8 @@
             true
           );
         });
+});
+      
     </script>
   </head>
 
