@@ -4,18 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="form-builder.min.470be803fc19e2759f2a2aa822e9b490.css"
+    />
+    <link
+      rel="stylesheet"
+      href="kennametal-site.min.18c7c5434abe8a8780ef03e2549a2d53.css"
+    />
+    <style type="text/css">
+      .form-boundary {
+        display: block;
+        height: 10px;
+        margin: 15px auto !important;
+        border-bottom: solid 1px black;
+      }
+    </style>
+
     <title>XR File Upload</title>
 
     <!--jQuery isn't required for the D365 form code to work. If removed, the form validation scripts below need to be updated to use vanilla JS -->
-    
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 
     <!-- FormCapture.bundle.js is required, and is provided by D365 Form Capture auto-generation -->
     <script src="https://cxppusa1formui01cdnsa01-endpoint.azureedge.net/usa/FormCapture/FormCapture.bundle.js"></script>
 
     <script>
-      
-// generateGUID() creates a GUID that gets saved to the Contact record on form submit, and simultaneously passed to Power Automate flow as a lookup value (i.e. tethers the form submission, and the file upload action together)
+      // generateGUID() creates a GUID that gets saved to the Contact record on form submit, and simultaneously passed to Power Automate flow as a lookup value (i.e. tethers the form submission, and the file upload action together)
       function generateGUID() {
         return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
           /[xy]/g,
@@ -27,62 +43,59 @@
         );
       }
 
-      
-$(document).ready(function(){
-  
-  const submitBtn = document.getElementById('submitButton');
+      $(document).ready(function () {
+        const submitBtn = document.getElementById("submitButton");
 
-  // File size validation. Disables submit button if over 10Mb.
-  document.getElementById('fileInput').addEventListener('change', function (event) {
-          const selectedFile = event.target.files[0];
-          if (selectedFile) {
+        // File size validation. Disables submit button if over 10Mb.
+        document
+          .getElementById("fileInput")
+          .addEventListener("change", function (event) {
+            const selectedFile = event.target.files[0];
+            if (selectedFile) {
               const fileSizeInBytes = selectedFile.size;
               const fileSizeInMB = Math.round(fileSizeInBytes / 1024 / 1024); // Convert to megabytes
               const maxSizeInMB = 10; // Set your desired maximum size in megabytes
 
               if (fileSizeInMB > maxSizeInMB) {
-                  alert('File size exceeds the allowed 10 Mb limit.');
-                  
-                  submitBtn.disabled = true;
-                  event.target.value = '';
+                alert("File size exceeds the allowed 10 Mb limit.");
+
+                submitBtn.disabled = true;
+                event.target.value = "";
               } else {
                 submitBtn.disabled = false;
               }
-          }
-      });
-      
-      // Email address validation. Disables submit button if either @kennametal.com or @widia.com are present.
-      document.getElementById('emailInput').addEventListener('change', function (event) {
-              
-              var emailInput = document.getElementById("emailInput").value;
-              var invalidDomains = ["@kennametal.com", "@widia.com"];
-              var isValid = true;
+            }
+          });
 
-              invalidDomains.forEach(function(domain) {
-                  if (emailInput.includes(domain)) {
-                      isValid = false;
-                  }
-              });
-              
-              if (!isValid) {
-                  alert("Email addresses from kennametal.com and widia.com are not allowed.");    
-                  submitBtn.disabled = true;
+        // Email address validation. Disables submit button if either @kennametal.com or @widia.com are present.
+        document
+          .getElementById("emailInput")
+          .addEventListener("change", function (event) {
+            var emailInput = document.getElementById("emailInput").value;
+            var invalidDomains = ["@kennametal.com", "@widia.com"];
+            var isValid = true;
 
-              } else {
-                submitBtn.disabled = false;
+            invalidDomains.forEach(function (domain) {
+              if (emailInput.includes(domain)) {
+                isValid = false;
               }
+            });
 
-      });
+            if (!isValid) {
+              alert(
+                "Email addresses from kennametal.com and widia.com are not allowed."
+              );
+              submitBtn.disabled = true;
+            } else {
+              submitBtn.disabled = false;
+            }
+          });
 
-      
+        let formMapGuid = generateGUID();
 
-      let formMapGuid = generateGUID();
-
-      // Standard form capture 
-      // https://learn.microsoft.com/en-us/dynamics365/customer-insights/journeys/real-time-marketing-form-capture#embedding-the-capture-script-into-your-page-and-mapping-definition
-      d365mktformcapture
-        .waitForElement("#xrForm")
-        .then((form) => {
+        // Standard form capture
+        // https://learn.microsoft.com/en-us/dynamics365/customer-insights/journeys/real-time-marketing-form-capture#embedding-the-capture-script-into-your-page-and-mapping-definition
+        d365mktformcapture.waitForElement("#xrForm").then((form) => {
           $("#fmguid").val(formMapGuid);
 
           const mappings = [
@@ -161,7 +174,6 @@ $(document).ready(function(){
             },
           ];
 
-          
           form.addEventListener(
             "submit",
             (e) => {
@@ -183,12 +195,10 @@ $(document).ready(function(){
               d365mktformcapture
                 .submitForm(captureConfig, payload)
                 .then((e) => {
-
                   // If User has uploaded a file using Option 2 field, then an HTTP POST call is made to Power Automate
                   let fileInput = document.getElementById("fileInput");
 
                   if (fileInput.files.length > 0) {
-
                     var form = new FormData();
                     form.append("fileContent", fileInput.files[0]);
                     form.append("fileName", fileInput.files[0].name);
@@ -201,9 +211,10 @@ $(document).ready(function(){
                       mimeType: "multipart/form-data",
                       contentType: false,
                       data: form,
-                      headers:{
-                        "MarketingCaseToken":"4cb14be8-417f-405a-adc1-26c0eb7c24b0"
-                      }
+                      headers: {
+                        MarketingCaseToken:
+                          "4cb14be8-417f-405a-adc1-26c0eb7c24b0",
+                      },
                     };
 
                     $.ajax(settings).done(function (response) {
@@ -219,66 +230,410 @@ $(document).ready(function(){
             true
           );
         });
-});
-      
+      });
     </script>
   </head>
 
   <body>
     <main>
-      <h1>XR File Upload</h1>
+      <h1>Cross Reference Form Capture and File Upload</h1>
     </main>
 
-    <form action="" id="xrForm">
-      <p>First Name: <input type="text" name="firstName" /></p>
-      <p>Last Name: <input type="text" name="lastName" /></p>
-      <p>Job Title: <input type="text" name="jobTitle" /></p>
-      <p>Email: <input id="emailInput" type="text" name="emailAddress" /></p>
-      <p>Company Name: <input type="text" name="companyName" /></p>
-      <p>Account Number: <input type="text" name="accountNumber" /></p>
-      <p>Phone: <input type="text" name="telephone" /></p>
-      <p>City: <input type="text" name="city" /></p>
-      <p>Postal Code: <input type="text" name="postalCode" /></p>
-      <p>
-        Country: <input type="radio" name="country" value="usa" /><label
-          >USA</label
-        >
-      </p>
-      <p>
-        Preferred Language:<input
-          type="radio"
-          name="preferredLanguage"
-          value="english"
-        /><label>English</label>
-      </p>
+    <div id="modalWrapper" style="width: 650px; margin: auto; padding: 50px">
+      <div class="responsivegrid aem-GridColumn aem-GridColumn--default--12">
+        <div class="aem-Grid aem-Grid--12 aem-Grid--default--12">
+          <div
+            style="
+              border-bottom: solid 5px rgb(255, 210, 0);
+              background-color: rgb(35, 32, 31);
+              color: white;
+              font-size: 16px;
+              font-weight: 700;
+              padding: 15px 25px;
+              font-family: acumin-pro, sans-serif, Arial;
+            "
+          >
+            Indexable and Solid Carbide Insert Conversion Guide
+          </div>
+          <div class="form aem-GridColumn aem-GridColumn--default--12">
+            <form clas="form" action="" id="xrForm">
+              <p style="border-bottom: solid 1px black; padding: 10px 15px">
+                Please complete and submit the below form for Cross Reference
+                information.
+              </p>
 
-<!-- This Option 1 field is obselete. It was originally created as a placeholder field on the CIJ form for the File Upload piece. It will be removed, and only Option 2 will remain, as a static text input field -->
-      <p style="display:none;" >Option 1: File Submission <input type="text" name="option1" /></p>
+              <div class="form-content">
+                <div class="aem-Grid aem-Grid--12 aem-Grid--default--12">
+                  <div
+                    class="text aem-GridColumn--default--none aem-GridColumn aem-GridColumn--default--6 aem-GridColumn--offset--default--0"
+                  >
+                    <div
+                      class="cmp-form-text form-text--required"
+                      data-cmp-is="formText"
+                      data-show="false"
+                    >
+                      <label for="formField1">First Name</label>
+                      <input
+                        id="formField1"
+                        class="cmp-form-text__text"
+                        data-cmp-hook-form-text="input"
+                        type="text"
+                        name="firstName"
+                        required=""
+                        title="false"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="text aem-GridColumn--default--none aem-GridColumn aem-GridColumn--default--6 aem-GridColumn--offset--default--0"
+                  >
+                    <div
+                      class="cmp-form-text form-text--required"
+                      data-cmp-is="formText"
+                      data-show="false"
+                    >
+                      <label for="formField2">Last Name</label>
+                      <input
+                        id="formField2"
+                        class="cmp-form-text__text"
+                        data-cmp-hook-form-text="input"
+                        type="text"
+                        name="lastName"
+                        required=""
+                        title="false"
+                      />
+                    </div>
+                  </div>
 
+                  <div
+                    class="text aem-GridColumn--default--none aem-GridColumn aem-GridColumn--default--6 aem-GridColumn--offset--default--0"
+                  >
+                    <div
+                      class="cmp-form-text form-text--required"
+                      data-cmp-is="formText"
+                      data-show="false"
+                    >
+                      <!-- The following Email input has an event listener in the above JavaScript to prevent '@kennametal' and '@widia.com' email addresses from being input -->
+                      <label for="emailInput">Email</label>
+                      <input
+                        id="emailInput"
+                        class="cmp-form-text__text"
+                        data-cmp-hook-form-text="input"
+                        type="text"
+                        name="emailAddress"
+                        required=""
+                        title="false"
+                      />
+                    </div>
+                  </div>
 
-      <label for="excelFile">Option 1 Upload Excel File:</label>
-      <p>To provide the details of your request, please download and use our
-        <a href="https://kennametal.com/content/dam/kennametal/kennametal/ConversionGuide/form-template/Format_Kennametal_Preferred.xlsx">template</a>
-      </p>
-      <input
-        id="fileInput"
-        type="file"
-        class="form-control"
-        accept=".xlsx, .xls"
-      />
+                  <div
+                    class="text aem-GridColumn--default--none aem-GridColumn aem-GridColumn--default--6 aem-GridColumn--offset--default--0"
+                  >
+                    <div
+                      class="cmp-form-text form-text--required"
+                      data-cmp-is="formText"
+                      data-show="false"
+                    >
+                      <label for="formField4">Company Name</label>
+                      <input
+                        id="formField4"
+                        class="cmp-form-text__text"
+                        data-cmp-hook-form-text="input"
+                        type="text"
+                        name="companyName"
+                        required=""
+                        title="false"
+                      />
+                    </div>
+                  </div>
 
-      <p style="display:none;"></p>
-        Option 2: Cross Reference Data (Less than 10 items)
-        <input type="text" name="option2" />
-      </p>
+                  <div
+                    class="text aem-GridColumn--default--none aem-GridColumn aem-GridColumn--default--6 aem-GridColumn--offset--default--0"
+                  >
+                    <div
+                      class="cmp-form-text form-text--required"
+                      data-cmp-is="formText"
+                      data-show="false"
+                    >
+                      <label for="formField5">Country</label>
+                      <label>
+                        <input
+                          id="formField5"
+                          class="cmp-form-text__text"
+                          data-cmp-hook-form-text="input"
+                          type="radio"
+                          name="country"
+                          required=""
+                          title="false"
+                          value="usa"
+                        />USA</label
+                      >
+                    </div>
+                  </div>
 
-      <p>Additional Information: <input type="text" name="additionalInfo" /></p>
+                  <div
+                    class="text aem-GridColumn--default--none aem-GridColumn aem-GridColumn--default--6 aem-GridColumn--offset--default--0"
+                  >
+                    <div
+                      class="cmp-form-text form-text--required"
+                      data-cmp-is="formText"
+                      data-show="false"
+                    >
+                      <label for="formField6">City</label>
+                      <input
+                        id="formField6"
+                        class="cmp-form-text__text"
+                        data-cmp-hook-form-text="input"
+                        type="text"
+                        name="city"
+                        required=""
+                        title="false"
+                      />
+                    </div>
+                  </div>
 
-      <p>Consent: <input type="checkbox" name="consentField" /></p>
+                  <div
+                    class="text aem-GridColumn--default--none aem-GridColumn aem-GridColumn--default--6 aem-GridColumn--offset--default--0"
+                  >
+                    <div
+                      class="cmp-form-text form-text--required"
+                      data-cmp-is="formText"
+                      data-show="false"
+                    >
+                      <label for="formField7">Zip</label>
+                      <input
+                        id="formField7"
+                        class="cmp-form-text__text"
+                        data-cmp-hook-form-text="input"
+                        type="text"
+                        name="postalCode"
+                        required=""
+                        title="false"
+                      />
+                    </div>
+                  </div>
 
-      <input id="fmguid" type="hidden" name="formmappingguid" />
+                  <div
+                    class="text aem-GridColumn--default--none aem-GridColumn aem-GridColumn--default--6 aem-GridColumn--offset--default--0"
+                  >
+                    <div
+                      class="cmp-form-text form-text--required"
+                      data-cmp-is="formText"
+                      data-show="false"
+                    >
+                      <label for="formField8">Phone</label>
+                      <input
+                        id="formField8"
+                        class="cmp-form-text__text"
+                        data-cmp-hook-form-text="input"
+                        type="text"
+                        name="telephone"
+                        required=""
+                        title="false"
+                      />
+                    </div>
+                  </div>
 
-      <button id="submitButton" type="submit">Submit form</button>
-    </form>
+                  <div
+                    class="text aem-GridColumn--default--none aem-GridColumn aem-GridColumn--default--6 aem-GridColumn--offset--default--0"
+                  >
+                    <div
+                      class="cmp-form-text form-text--required"
+                      data-cmp-is="formText"
+                      data-show="false"
+                    >
+                      <label for="formField10">Job Title</label>
+                      <input
+                        id="formField10"
+                        class="cmp-form-text__text"
+                        data-cmp-hook-form-text="input"
+                        type="text"
+                        name="jobTitle"
+                        required=""
+                        title="false"
+                      />
+                    </div>
+                  </div>
+
+                  <div
+                    class="text aem-GridColumn--default--none aem-GridColumn aem-GridColumn--default--6 aem-GridColumn--offset--default--0"
+                  >
+                    <div
+                      class="cmp-form-text form-text--required"
+                      data-cmp-is="formText"
+                      data-show="false"
+                    >
+                      <label for="formField11">Account Number</label>
+                      <input
+                        id="formField11"
+                        class="cmp-form-text__text"
+                        data-cmp-hook-form-text="input"
+                        type="text"
+                        name="accountNumber"
+                        required=""
+                        title="false"
+                      />
+                    </div>
+                  </div>
+
+                  <div
+                    class="text aem-GridColumn--default--none aem-GridColumn aem-GridColumn--default--6 aem-GridColumn--offset--default--0"
+                  >
+                    <div
+                      class="cmp-form-text form-text--required"
+                      data-cmp-is="formText"
+                      data-show="false"
+                    >
+                      <label for="formField12">Preferred Language</label>
+                      <label>
+                        <input
+                          id="formField12"
+                          class="cmp-form-text__text"
+                          data-cmp-hook-form-text="input"
+                          type="radio"
+                          name="preferredLanguage"
+                          required=""
+                          title="false"
+                          value="english"
+                        />
+                        English
+                      </label>
+                    </div>
+                  </div>
+                  <div
+                    class="text aem-GridColumn--default--none aem-GridColumn aem-GridColumn--default--12 aem-GridColumn--offset--default--0"
+                  >
+                    <div
+                      class="cmp-form-text form-text--required"
+                      data-cmp-is="formText"
+                      data-show="false"
+                    >
+                      <label for="formField15">Additional Information</label>
+                      <input
+                        class="cmp-form-text__text"
+                        data-cmp-hook-form-text="input"
+                        type="text"
+                        id="formField15"
+                        name="additionalInfo"
+                        required=""
+                        title="false"
+                      />
+                    </div>
+                  </div>
+
+                  <div
+                    class="form-boundary aem-GridColumn--default--none aem-GridColumn aem-GridColumn--default--12 aem-GridColumn--offset--default--0"
+                  ></div>
+
+                  <!-- This Option 1 field is obselete. It was originally created as a placeholder field on the CIJ form for the File Upload piece. It will be removed, and only Option 2 will remain, as a static text input field -->
+                  <!-- <p style="display:none;" >Option 1: File Submission <input type="text" name="option1" /></p> -->
+
+                  <div
+                    class="text aem-GridColumn--default--none aem-GridColumn aem-GridColumn--default--12 aem-GridColumn--offset--default--0"
+                  >
+                    <h3>Cross Reference Request Options</h3>
+                    <div
+                      class="cmp-form-text form-text--required"
+                      data-cmp-is="formText"
+                      data-show="false"
+                    >
+                      <label for="fileInput">Option 1: Upload Excel File</label>
+                      <p style="font-style: italic">
+                        To provide the details of your request, please download
+                        and use our
+                        <a
+                          href="https://kennametal.com/content/dam/kennametal/kennametal/ConversionGuide/form-template/Format_Kennametal_Preferred.xlsx"
+                          >template</a
+                        >
+                      </p>
+                      <input
+                        id="fileInput"
+                        class="cmp-form-text__text form-control"
+                        data-cmp-hook-form-text="input"
+                        type="file"
+                        name="fileUpload"
+                        required=""
+                        title="false"
+                        accept=".xlsx, .xls"
+                      />
+                    </div>
+                  </div>
+
+                  <div
+                    class="text aem-GridColumn--default--none aem-GridColumn aem-GridColumn--default--12 aem-GridColumn--offset--default--0"
+                  >
+                    <div
+                      class="cmp-form-text form-text--required"
+                      data-cmp-is="formText"
+                      data-show="false"
+                    >
+                      <label for="formField14"
+                        >Option 2: Cross Reference Data (Less than 10
+                        items)</label
+                      >
+                      <input
+                        class="cmp-form-text__text"
+                        data-cmp-hook-form-text="input"
+                        type="text"
+                        id="formField14"
+                        name="option2"
+                        required=""
+                        title="false"
+                      />
+                    </div>
+                  </div>
+
+                  <div
+                    class="form-boundary aem-GridColumn--default--none aem-GridColumn aem-GridColumn--default--12 aem-GridColumn--offset--default--0"
+                  ></div>
+
+                  <div
+                    class="text aem-GridColumn--default--none aem-GridColumn aem-GridColumn--default--12 aem-GridColumn--offset--default--0"
+                  >
+                    <div
+                      class="cmp-form-text form-text--required"
+                      data-cmp-is="formText"
+                      data-show="false"
+                    >
+                      <label for="formField16">Consent</label>
+                      <p>
+                        <input
+                          class="cmp-form-text__text"
+                          data-cmp-hook-form-text="input"
+                          type="checkbox"
+                          id="formField16"
+                          name="consentField"
+                          required=""
+                          title="false"
+                        />
+                        I would like to receive marketing information from
+                        Kennametal
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    class="button aem-GridColumn aem-GridColumn--default--12"
+                  >
+                    <div class="form-button center">
+                      <!-- #fmguid is a hidden field that MUST exist for the File Upload functionality to work. This field is assigned a GUID value by JavaScript, and which is used in Power Automate and Dynamics/Dataverse to create an association between a From Submission record and the uploaded file. -->
+                      <input id="fmguid" type="hidden" name="formmappingguid" />
+                      <button
+                        id="submitButton"
+                        class="cmp-form-button center"
+                        type="submit"
+                      >
+                        Submit
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
